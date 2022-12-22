@@ -7,7 +7,6 @@ const port = 3000
 const server = http.createServer((req, res) => {
     const q = url.parse(req.url, true)
     const fileName  = q.pathname.substring(1)
-    // query está pegando o parâmetro name na url == /?name="name"
 
     if (fileName.includes("html")) {
         if (fs.existsSync(fileName)) {
