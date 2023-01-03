@@ -2,6 +2,8 @@ const fs = require("fs")
 const chalk = require("chalk")
 const inquirer = require("inquirer")
 
+let loggedAccount = null
+
 iniciar()
 
 function iniciar() {
@@ -30,10 +32,10 @@ function iniciar() {
         } else if (action === "Sacar") {
             accountAmount(false)
         } else if (action === "Sair") {
-            console.log("Obrigado por usar o Accounts!")
+            console.log(chalk.bgBlue.black("Obrigado por usar o Accounts!"))
             process.exit()
         }
-    })
+    }).catch(err => console.log(err))
 }
 function getAccountData(accountName) {
     const accountJson = fs.readFileSync(`accounts/${accountName}.json`, {
