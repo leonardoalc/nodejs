@@ -1,12 +1,21 @@
+// core module
 const fs = require("fs")
+
+// modulo externo
 const chalk = require("chalk")
 const inquirer = require("inquirer")
 
+// variavel de login
 let loggedAccount = null
 
 iniciar()
 
 function iniciar() {
+    if (loggedAccount === null) {
+        console.log(chalk.bold("Você não está logado."))
+    } else {
+        console.log(chalk.bold(`Logado na conta: ${loggedAccount}`))
+    }
     inquirer.prompt([
         {
             type: "list",
@@ -14,6 +23,7 @@ function iniciar() {
             message: "O que você deseja fazer?",
             choices: [
                 "Criar conta",
+                "Logar",
                 "Consultar saldo",
                 "Depositar",
                 "Sacar",
@@ -25,6 +35,8 @@ function iniciar() {
 
         if (action === "Criar conta") {
             createAccount()
+        } else if (action === "Logar") {
+            login()
         } else if (action === "Consultar saldo") {
             consult()
         } else if (action === "Depositar") {
@@ -37,8 +49,8 @@ function iniciar() {
         }
     }).catch(err => console.log(err))
 }
-function getAccountData(accountName) {
-    const accountJson = fs.readFileSync(`accounts/${accountName}.json`, {
+function getAccountData() {
+    const accountJson = fs.readFileSync(`accounts/${loggedAccount}.json`, {
         encoding: "utf-8",
         flag: "r"
     })
@@ -79,125 +91,150 @@ function createAccount() {
         }, 3000);
     })
 }
-
-function consult() {
+function login() {
     inquirer.prompt([
         {
-            name: "accountName",
-            message: "Qual a conta a ser consultada?"
+            name: "account",
+            message: "Nome da conta a ser logada: "
         }
     ]).then(awnser => {
-        const accountName = awnser["accountName"]
+        const accountName = awnser["account"]
 
-        // verificando se a conta existe
         if (fs.existsSync(`accounts/${accountName}.json`) === false) {
             console.log(chalk.bgRed.black("Esta conta não existe!"))
             setTimeout(() => {
+                loggedAccount = null
                 console.clear()
                 iniciar()
             }, 3000);
-        } else {
-            const accountData = getAccountData(accountName)
-            console.log(chalk.bold(`Conta: ${accountName}`))
-            if (accountData.balance === 0) {
-                console.log(chalk.bold("Saldo disponível: "), chalk.bold(accountData.balance))
-            } else {
-                console.log(chalk.bold("Saldo disponível: R$"), chalk.bold.green(accountData.balance))
-            }
-            setTimeout(() => {
-                console.clear()
-                iniciar()
-            }, 3000);
+            return
         }
-    })
+
+        loggedAccount = accountName
+        console.log(chalk.bgBlue.black(`Você logou na conta: ${loggedAccount}`))
+        setTimeout(() => {
+            console.clear()
+            iniciar()
+        }, 3000);
+    }).catch(err => console.log(err))
+}
+function consult() {
+    // verificando se está logado
+    if (loggedAccount === null) {
+        console.log(chalk.bgRed.black("Você precisa estar logado!"))
+        setTimeout(() => {
+            console.clear() 
+            iniciar()
+            
+        }, 3000);
+        return
+    }
+
+    const accountData = getAccountData(loggedAccount)
+    console.log(chalk.bold(`Conta: ${loggedAccount}`))
+    if (accountData.balance === 0) {
+        console.log(chalk.bold("Saldo disponível: "), chalk.bold(accountData.balance))
+    } else {
+        console.log(chalk.bold("Saldo disponível: R$"), chalk.bold.green(accountData.balance))
+    }
+    setTimeout(() => {
+        console.clear()
+        iniciar()
+    }, 3000);
 }
 function accountAmount(add) {
+    // verificando se está logado
+    if (loggedAccount === null) {
+        console.log(chalk.bgRed.black("Você precisa estar logado!"))
+        setTimeout(() => {
+            console.clear() 
+            iniciar()
+            
+        }, 3000);
+        return
+    }
     inquirer.prompt([
         {
-            name: "accountName",
-            message: "Qual o nome da conta?"
-        },
-        {
             name: "amount",
-            message: "Qual o valor?"
+            message: "Valor: "
         }
     ]).then(awnser => {
-        const name = awnser["accountName"]
         const amount = awnser["amount"]
         if (add) {
-            addAmount(name, amount)
+            addAmount(amount)
         } else {
-            withDraw(name, amount)
+            withDraw(amount)
         }
     })
 }
-function addAmount(accountName, amount) {
+function addAmount(amount) {
     if (amount <= 0 || amount === NaN || typeof(amount) === String){
         // verificando valor
         console.log(chalk.red("ERRO!"), "Valor inválido!")
         setTimeout(() => {
             console.clear()
-            accountAmount(true) 
+            return accountAmount(true) 
         }, 3000);
-    } else if (fs.existsSync(`accounts/${accountName}.json`) === false) {
+    } else if (fs.existsSync(`accounts/${loggedAccount}.json`) === false) {
         // verificando se a conta existe
         console.log(chalk.bgRed.black("Esta conta não existe!"))
         setTimeout(() => {
             console.clear()
-            accountAmount(true) 
+            return accountAmount(true) 
         }, 3000)
-    } else {
-        const accountData = getAccountData(accountName)
+    }    
+    const accountData = getAccountData()
 
-        // adicionando o dinheiro na conta 
+    // adicionando o dinheiro na conta 
 
-        accountData.balance = Number(accountData.balance) + Number(amount)
-        fs.writeFileSync(
-            `accounts/${accountName}.json`,
-            JSON.stringify(accountData), 
-            function (err) {
-                console.log(err)
-            }
-        )
-        console.log(chalk.bgCyan.black(`Adicionados: R$${amount}`))
+    accountData.balance = Number(accountData.balance) + Number(amount)
+    fs.writeFileSync(
+        `accounts/${loggedAccount}.json`,
+        JSON.stringify(accountData), 
+        function (err) {
+            console.log(err)
+        }
+    )
+    console.log(chalk.bgCyan.black(`Depositando: R$${amount}`))
+    setTimeout(() => {
+        console.clear()
+        iniciar()
+    }, 3000);
+}
+
+function withDraw(amount) {
+    // verificando se está logado
+    if (loggedAccount === null) {
+        console.log(chalk.bgRed.black("Você precisa estar logado!"))
+        setTimeout(() => {
+            console.clear() 
+            iniciar()
+            
+        }, 3000);
+        return
+    }
+    const accountData = getAccountData(loggedAccount)
+    if (amount > accountData.balance) {
+        // verificando se o valor é válido
+        console.log(chalk.bgRed.black.bold("Saldo insuficiente!"))
         setTimeout(() => {
             console.clear()
             iniciar()
         }, 3000);
-    }    
-}
-
-function withDraw(accountName, amount) {
-        // verificando se a conta existe
-        if (fs.existsSync(`accounts/${accountName}.json`) === false) {
-            console.log(chalk.bgRed.black("Esta conta não existe!"))
-            setTimeout(() => {
-                console.clear()
-                accountAmount(false)
-            }, 3000);
-        } else {
-            const accountData = getAccountData(accountName)
-            if (amount > accountData.balance) {
-                // verificando se o valor é válido
-                console.log(chalk.bgRed.black.bold("Saldo insuficiente!"))
-                setTimeout(() => {
-                    console.clear()
-                    iniciar()
-                }, 3000);
-            } else {
-                // adicionando o dinheiro na conta 
-                accountData.balance = Number(accountData.balance) - Number(amount)
-                fs.writeFileSync(
-                    `accounts/${accountName}.json`,
-                    JSON.stringify(accountData), 
-                    function (err) {
-                        console.log(err)
-                    }
-                )
-                console.log(chalk.bgCyan.black(`Sacando: R$${amount}`))
-                setTimeout(() => {
-                    iniciar()
-                }, 3000);
-            }
+        return
+    }
+    // removendo o dinheiro da conta 
+    accountData.balance = Number(accountData.balance) - Number(amount)
+    fs.writeFileSync(
+        `accounts/${loggedAccount}.json`,
+        JSON.stringify(accountData), 
+        function (err) {
+            console.log(err)
         }
+    )
+    console.log(chalk.bgCyan.black(`Sacando: R$${amount}`))
+    setTimeout(() => {
+        console.clear()
+        iniciar()
+    }, 3000);
 }
