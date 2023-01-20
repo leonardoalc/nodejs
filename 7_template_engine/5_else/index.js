@@ -19,9 +19,10 @@ app.get("/", (req, res) => {
     }
 
     const auth = false
+    const approved = false
 
-    const palavra = "palavraaaaa"
-    res.render("home", { user: user, palavra, auth}) // você pode simplificar para {user} por terem o nome igual.
+    const palavra = "teste"
+    res.render("home", { user: user, auth, approved}) // você pode simplificar para {user} por terem o nome igual.
 })
 
 app.listen(3000, () => {

@@ -8,7 +8,9 @@ app.set("view engine", "handlebars")
 
 app.get("/dashboard", (req, res) => {
 
-    res.render("dashboard")
+    const itens = ["a", "b", "c"]
+
+    res.render("dashboard", { itens })
 })
 
 app.get("/", (req, res) => {
@@ -18,10 +20,10 @@ app.get("/", (req, res) => {
         age: 19
     }
 
-    const auth = false
+    const auth = true
+    const approved = true
 
-    const palavra = "palavraaaaa"
-    res.render("home", { user: user, palavra, auth}) // você pode simplificar para {user} por terem o nome igual.
+    res.render("home", { user: user, auth, approved}) // você pode simplificar para {user} por terem o nome igual.
 })
 
 app.listen(3000, () => {
