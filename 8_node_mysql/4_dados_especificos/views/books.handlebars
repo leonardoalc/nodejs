@@ -1,0 +1,10 @@
+<h1>Livros</h1>
+<div style="text-align: center;">
+    {{#each books}}
+        <div>
+            <h2>{{this.title}}</h2>
+            <p>Páginas: {{this.pages}}</p>
+            <a href="/books/{{this.idbooks}}">Ver mais</a>
+        </div>
+    {{/each}}
+</div>
