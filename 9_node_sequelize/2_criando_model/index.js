@@ -22,11 +22,30 @@ app.set("view engine", "handlebars")
 // setado static de css
 app.use(express.static("public"))
 
+app.get("/createuser", (req, res) => {
+    res.render("adduser")
+})
+app.post("/users/create", async (req, res) => {
+
+    const name = req.body.name.toLowerCase()
+    const occupation = req.body.occupation.toLowerCase()
+    let newsletter = req.body.newsletter
+
+    if(newsletter === "on") {
+        newsletter = true
+    } else {
+        newsletter = false
+    }
+
+    await User.create({name, occupation, newsletter})
+
+    res.redirect("/")
+})
+
 // página principal
 app.get("/", (req, res) => {
     res.render("home")
 })
-
 
 // setando configurações para conexão
 conn.sync().then(() => {
