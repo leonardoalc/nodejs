@@ -1,0 +1,9 @@
+<h1>Usuários cadastrados</h1>
+<div class="container">
+    {{#each users}}
+        <div class="item">
+            <p style="text-transform: capitalize;">{{this.name}}</p>
+            <a href="/users/{{this.id}}">Ver mais</a>
+        </div>
+    {{/each}}
+</div>
