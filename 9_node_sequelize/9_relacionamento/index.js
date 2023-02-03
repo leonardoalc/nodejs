@@ -3,6 +3,7 @@ const exphbs = require("express-handlebars")
 const conn = require("./db/conn")
 
 const User = require("./models/User")
+const Address = require("./models/Address")
 
 const app = express()
 
@@ -69,7 +70,6 @@ app.get("/users/edit/:id", async (req, res) => {
 
     const user = await User.findOne({raw: true, where: {id: id}})
 
-    console.log(user)
     res.render("editdata", {user})
 })
 app.post("/users/updatedata", async (req, res) => {
@@ -104,6 +104,10 @@ app.get("/", async (req, res) => {
 })
 
 // setando configurações para conexão
-conn.sync().then(() => {
-    app.listen(5000)
-}).catch(err => console.log(err.message))
+conn
+    .sync()
+    //.sync({ force: true })
+    .then(() => {
+        app.listen(5000)
+    })
+    .catch(err => console.log(err.message))

@@ -1,0 +1,20 @@
+<div class="address-container">
+    <h1>Editar endereço</h1>
+    <form action="/address/update" method="post">
+        <input type="hidden" name="id" value="{{address.id}}">
+        <input type="hidden" name="UserId" value="{{address.UserId}}">
+        <div class="form-control">
+            <label for="street">Rua:</label>
+            <input type="text" name="street" placeholder="Digite a rua" value="{{address.street}}">
+        </div>
+        <div class="form-control">
+            <label for="number">Número:</label>
+            <input type="text" name="number" placeholder="Digite o número" value="{{address.number}}">
+        </div>
+        <div class="form-control">
+            <label for="city">Rua:</label>
+            <input type="text" name="city" placeholder="Digite a cidade" value="{{address.city}}">
+        </div>
+        <input type="submit" value="Alterar endereço">
+    </form>
+</div>

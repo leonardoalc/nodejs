@@ -104,6 +104,10 @@ app.get("/", async (req, res) => {
 })
 
 // setando configurações para conexão
-conn.sync().then(() => {
-    app.listen(5000)
-}).catch(err => console.log(err.message))
+conn
+    .sync()
+    //.sync({ force: true })
+    .then(() => {
+        app.listen(5000)
+    })
+    .catch(err => console.log(err.message))

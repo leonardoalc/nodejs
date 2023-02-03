@@ -3,6 +3,8 @@ const exphbs = require("express-handlebars")
 const conn = require("./db/conn")
 
 const User = require("./models/User")
+const Address = require("./models/Address")
+const { raw } = require("express")
 
 const app = express()
 
@@ -67,10 +69,13 @@ app.post("/users/delete/:id", async (req, res) => {
 app.get("/users/edit/:id", async (req, res) => {
     const id = req.params.id
 
-    const user = await User.findOne({raw: true, where: {id: id}})
+    try {
+        const user = await User.findOne({ include: Address, where: {id: id}})
 
-    console.log(user)
-    res.render("editdata", {user})
+    res.render("editdata", {user: user.get({plain: true})})
+    } catch(err) {
+        console.log(err)
+    }
 })
 app.post("/users/updatedata", async (req, res) => {
 
@@ -95,6 +100,61 @@ app.post("/users/updatedata", async (req, res) => {
 
     res.redirect("/")
 })
+
+// adicionanndo endereço com relacionamento
+app.post("/address/create", async (req, res) => {
+
+    const UserId= req.body.UserId // peguei o UserId com input hidden o form
+    const street = req.body.street
+    const number = req.body.number
+    const city = req.body.city
+
+    // salvando todos os dados dentro de um objeto, tendo os nomes escritos de forma igual aos salvos
+    // js é casesensitive, não se esqueça.
+    const address = {
+        UserId,
+        street,
+        number,
+        city
+    }
+
+    await Address.create(address)
+
+    res.redirect(`/users/edit/${UserId}`)
+})
+
+// endereço de edição com relacional
+app.get("/address/edit/:id", async (req, res) => {
+
+    const id = req.params.id
+
+    const address = await Address.findOne( {raw: true, where: {id: id}})
+
+    console.log(address)
+
+    res.render("editaddress", {address})
+})
+
+// post de edição de dado relacional
+app.post("/address/update", async (req, res)  => {
+    const UserId = req.body.UserId
+    const id = req.body.id
+    const street = req.body.street
+    const number = req.body.number
+    const city = req.body.city
+
+    const address = {
+        id,
+        street,
+        number,
+        city,
+        UserId
+    }
+
+    await Address.update(address, {where: {id: id}})
+
+    res.redirect(`/users/edit/${UserId}`)
+})
 // página principal
 app.get("/", async (req, res) => {
 
@@ -104,6 +164,10 @@ app.get("/", async (req, res) => {
 })
 
 // setando configurações para conexão
-conn.sync().then(() => {
-    app.listen(5000)
-}).catch(err => console.log(err.message))
+conn
+    .sync()
+    //.sync({ force: true })
+    .then(() => {
+        app.listen(5000)
+    })
+    .catch(err => console.log(err.message))
