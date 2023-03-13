@@ -5,7 +5,7 @@
       <a href="/" class="title">{{this.title}}</a>
       <span class="actions">
         <a href="/"><i class="fa-solid fa-check"></i></a>
-        <a href="/"><i class="fa-solid fa-pen-to-square"></i></a>
+        <a href="/tasks/edit/{{this.id}}"><i class="fa-solid fa-pen-to-square"></i></a>
         <a href="/">
           <form action="/tasks/delete" method="post">
             <input type="hidden" name="id" value={{this.id}}>
