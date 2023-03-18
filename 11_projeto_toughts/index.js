@@ -1,12 +1,14 @@
-// exportações do express
+// importações do express
 const express = require("express")
 const exphbs = require("express-handlebars")
 const session = require("express-session")
 const flash = require("express-flash")
 
-// outras exportações
+// outras importações
 const FileStore = require("session-file-store")(session)
 const conn = require("./db/conn")
+const toughtsRoutes = require("./routes/toughtsRoutes")
+const ToughtController = require("./controllers/ToughtController")
 
 // models
 const Tought = require("./models/Tought")
@@ -65,6 +67,11 @@ app.use((req, res, next) => {
 
     next()
 })
+
+// routes
+app.use("/toughts", toughtsRoutes)
+
+app.get("/", ToughtController.showAll)
 
 // rodando a aplicação
 conn
