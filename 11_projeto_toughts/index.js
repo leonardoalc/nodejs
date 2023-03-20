@@ -7,7 +7,12 @@ const flash = require("express-flash")
 // outras importações
 const FileStore = require("session-file-store")(session)
 const conn = require("./db/conn")
+
+// importando routes
 const toughtsRoutes = require("./routes/toughtsRoutes")
+const authRoutes = require("./routes/authRoutes")
+
+// outros
 const ToughtController = require("./controllers/ToughtController")
 
 // models
@@ -70,12 +75,13 @@ app.use((req, res, next) => {
 
 // routes
 app.use("/toughts", toughtsRoutes)
+app.use("/",authRoutes)
 
 app.get("/", ToughtController.showAll)
 
 // rodando a aplicação
 conn
-    .sync({force: true})
-    //.sync()
+    //.sync({force: true})
+    .sync()
     .then(() => app.listen(port, () => console.log("Rodando na porta: " + port)))
     .catch((err) => console.log("Não foi possível rodar a aplicação... Erro: " + err)) 
