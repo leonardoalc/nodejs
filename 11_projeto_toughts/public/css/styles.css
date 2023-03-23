@@ -163,6 +163,7 @@ form input[type='submit']:hover,
 }
 
 /* CREATE / EDIT FORM */
+
 .tought-form-container a {
   color: #f6982d;
 }
@@ -245,8 +246,12 @@ form input[type='submit']:hover,
   cursor: pointer;
 }
 
+.order-container i {
+  color: #fff;
+}
+
 .order-container button:hover,
-.order-container a:hover {
+.order-container a:hover, i:hover {
   color: #f6982d;
 }
 
@@ -254,10 +259,6 @@ form input[type='submit']:hover,
 .order-container button,
 .order-container a {
   margin: 0 10px;
-}
-
-.order-container i {
-  color: #f6982d;
 }
 
 .toughts-container figure {
