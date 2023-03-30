@@ -1,0 +1,11 @@
+<h1>Livros</h1>
+<div class="books">
+    {{#each books}}
+        <div class="book">
+            <img src="{{this.image}}" alt="{{this.name}}">
+            <h2>{{this.name}}</h2>
+            <p>R${{this.price}}</p>
+            <p>Páginas: {{this.pages}}</p>
+        </div>
+    {{/each}}
+</div>
