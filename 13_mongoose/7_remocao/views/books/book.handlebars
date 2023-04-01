@@ -1,0 +1,11 @@
+<div class="book-page">
+    <a href="/books">Voltar</a>
+    <h1>{{book.name}}</h1>
+    <p>Preço:R${{book.price}}</p>
+    <p>Pages: {{book.pages}}</p>
+    <img src="{{book.image}}" alt="{{book.name}}">
+    <p>{{book.description}}</p>
+    <form action="/books/remove/{{book._id}}" method="post">
+        <input type="submit" value="Excluir" class="btn">
+    </form>
+</div>
