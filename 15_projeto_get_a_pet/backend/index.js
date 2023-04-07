@@ -3,7 +3,10 @@ const cors = require("cors")
 
 const app = express()
 
+const port = 5000
+
 const userRoutes = require("./routes/userRoutes")
+const petRoutes = require("./routes/petRoutes")
 
 // configurando resposta
 app.use(express.json())
@@ -14,5 +17,6 @@ app.use(cors({credentials: true, origin: "http://localhost:3000"}))
 
 // Rotas
 app.use("/users", userRoutes)
+app.use("/pets", petRoutes)
 
-app.listen(5000, () => {console.log("Aplicação rodando.")})
+app.listen(port, () => {console.log("Aplicação rodando.")})
