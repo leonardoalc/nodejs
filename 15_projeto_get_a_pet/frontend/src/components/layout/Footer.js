@@ -1,6 +1,10 @@
+import styles from "./Footer.module.css"
+
 const Footer = () => {
   return (
-    <div>Footer</div>
+    <footer className={styles.footer}>
+      <span className="bold">Get a Pet <span>&copy;</span></span>
+    </footer>
   )
 }
 export default Footer
