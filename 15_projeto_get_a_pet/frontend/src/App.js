@@ -19,13 +19,14 @@ import PetDetails from './components/pages/Pet/PetDetails'
 import MyAdoptions from './components/pages/Pet/MyAdoptions'
 
 /* contexts */
-// import { UserProvider } from './context/UserContext'
+import { UserProvider } from './context/UserContext'
+
 function App() {
   return (
     <Router>
-      {/* <UserProvider> */}
+      <UserProvider>
         <Navbar />
-        {/* <Message /> */}
+        <Message />
         <Container>
           <Routes>
             <Route path="/login" element={<Login/>} />
@@ -40,7 +41,7 @@ function App() {
           </Routes>
         </Container>
         <Footer />
-      {/* </UserProvider> */}
+      </UserProvider>
     </Router>
   )
 }
