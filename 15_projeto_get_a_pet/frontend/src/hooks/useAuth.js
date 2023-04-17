@@ -32,8 +32,9 @@ export default function useAuth() {
 
         try {
             const data = await api.post("/users/register", user)
-                .then((response) => {return response})
+                .then((response) => {return response.data})
 
+            // salvando informações do usuário no navegador
             await authUser(data)
         } catch (error) {
             msgTxt = error.response.data.message
@@ -49,10 +50,26 @@ export default function useAuth() {
         setauthenticated(true)
 
 
-        localStorage.setItem("token", JSON.stringify(data.data.token))
+        localStorage.setItem("token", JSON.stringify(data.token))
 
         navigate("/")
 
+    }
+    async function login(user) {
+        let msgTxt = "Login realizado com sucesso"
+        let msgType = "success"
+
+        try {
+            const data = await api.post("/users/login", user)
+                .then((response) => {return response.data})
+
+            authUser(data)
+        } catch (error) {
+            msgTxt = error.response.data.message
+            msgType = "error"
+        }
+
+        setFlashMessage(msgTxt, msgType)
     }
 
     function logout() {
@@ -68,5 +85,5 @@ export default function useAuth() {
         setFlashMessage(msgTxt, msgType)
     }
 
-    return { authenticated, register, logout}
+    return { authenticated, register, login, logout}
 }
