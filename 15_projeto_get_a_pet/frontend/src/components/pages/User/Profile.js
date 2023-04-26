@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 
 // components
 import Input from "../../form/Input"
+import RoundedImage from "../../layout/RoundedImage"
 
 // auth
 import api from "../../../utils/api"
@@ -14,9 +15,11 @@ import api from "../../../utils/api"
 // flash messages
 import useFlashMessage from "../../../hooks/useFlashMessage"
 
+
 const Profile = () => {
 
   const [user, setuser] = useState({})
+  const [preview, setpreview] = useState()
   const [token] = useState(localStorage.getItem("token") || "")
   const {setFlashMessage} = useFlashMessage() 
 
@@ -30,7 +33,8 @@ const Profile = () => {
   }, [])
 
   const onFileChange = (e) => {
-    setuser({...user, [e.target.name]: e.target.fiiles[0]})
+    setpreview(e.target.files[0])
+    setuser({...user, [e.target.name]: e.target.files[0]})
   } 
 
   const handleChange = (e) => {
@@ -60,13 +64,19 @@ const Profile = () => {
       })
 
       setFlashMessage(data.message, msgType)
+      setTimeout(() => {
+        
+      }, 2000);
   }
   
   return (
     <div>
       <div className={styles.profile_container}>
         <h1>Perfil</h1>
-        <p>Preview de imagem</p>
+        {(user.image || preview) && (
+          <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API}/images/users/${user.image}`}
+          alt={user.name}
+          />)}
       </div>
       <form onSubmit={handleSubmit} className={formStyles.form_container}>
         <Input
@@ -113,7 +123,7 @@ const Profile = () => {
           placeholder="confirme sua senha"
           handleOnChange={handleChange}
         />
-        <input type="submit" value="sla" />
+        <input type="submit" value="Atualizar" />
       </form>
     </div>
   )
