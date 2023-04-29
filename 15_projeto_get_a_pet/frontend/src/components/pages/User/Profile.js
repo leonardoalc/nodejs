@@ -74,7 +74,7 @@ const Profile = () => {
       <div className={styles.profile_container}>
         <h1>Perfil</h1>
         {(user.image || preview) && (
-          <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API}/images/users/${user.image}`}
+          <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API}images/users/${user.image}`}
           alt={user.name}
           />)}
       </div>
